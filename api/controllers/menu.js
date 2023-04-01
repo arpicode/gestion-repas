@@ -141,9 +141,8 @@ const getMenuForCurrentMondayOrNextMonday = async (req, res) => {
 const semaine = (result_rows) => {
     // Initialisation du tableau de menus de la semaine
     const semaine = []
-    // Initialisation du menu et repas courants
-    let current_menu = null
-    let current_repas = null
+    // Initialisation du menu courant
+    let currentMenu = null
 
     // Parcours de chaque ligne de la requête SQL
     for (let row of result_rows) {
@@ -163,59 +162,51 @@ const semaine = (result_rows) => {
         } = row
 
         // Si c'est un nouveau menu, on l'ajoute au tableau de menus de la semaine
-        if (current_menu === null || current_menu.id !== menu_id) {
-            current_menu = {
+        if (currentMenu === null || currentMenu.id !== menu_id) {
+            currentMenu = {
                 id: menu_id,
                 date: date_menu,
                 repas: [],
             }
-            semaine.push(current_menu)
-            current_repas = null
+            semaine.push(currentMenu)
         }
 
         // Si c'est un nouveau repas, on l'ajoute au menu courant
-        if (current_repas === null || current_repas.id !== repas_id) {
-            current_repas = {
-                id: repas_id,
-                nb_convives: nb_convives,
-                recettes: [],
-                ingredients: {},
+        if (repas_id) {
+            let currentRepas = currentMenu.repas.find((repas) => repas.id === repas_id)
+            if (!currentRepas) {
+                currentRepas = {
+                    id: repas_id,
+                    nb_convives: nb_convives,
+                    recettes: [],
+                }
+                currentMenu.repas.push(currentRepas)
             }
-            current_menu.repas.push(current_repas)
-        }
 
-        // Si c'est une nouvelle recette, on l'ajoute au repas courant
-        let current_recette = current_repas.recettes.find((recette) => recette.id === recette_id)
-        if (!current_recette) {
-            current_recette = {
-                id: recette_id,
-                nom: recette_nom,
-                nb_personnes: nb_personnes,
-                ingredients: [],
+            // Si c'est une nouvelle recette, on l'ajoute au repas courant
+            let currentRecette = currentRepas.recettes.find((recette) => recette.id === recette_id)
+            if (!currentRecette) {
+                currentRecette = {
+                    id: recette_id,
+                    nom: recette_nom,
+                    nb_personnes: nb_personnes,
+                    ingredients: [],
+                }
+                currentRepas.recettes.push(currentRecette)
             }
-            current_repas.recettes.push(current_recette)
-        }
 
-        // On calcule la quantité nécessaire d'ingrédients pour cette recette, en ajustant en fonction du nombre de convives
-        const quantite_necessaire = (quantite * nb_convives) / nb_personnes
+            // On calcule la quantité nécessaire d'ingrédients pour cette recette, en ajustant en fonction du nombre de convives
+            const quantite_necessaire = (quantite * nb_convives) / nb_personnes
 
-        // On ajoute l'ingrédient à la recette courante
-        current_recette.ingredients.push({
-            id: ingredients_id,
-            nom: ingredient_nom,
-            quantite: quantite_necessaire,
-            unite: unite,
-        })
-
-        // On ajoute la quantité nécessaire de cet ingrédient à la liste d'ingrédients pour ce repas
-        if (!current_repas.ingredients[ingredients_id]) {
-            current_repas.ingredients[ingredients_id] = {
+            // On ajoute l'ingrédient à la recette courante
+            currentRecette.ingredients.push({
+                id: ingredients_id,
                 nom: ingredient_nom,
-                quantite: 0,
+                quantite: +quantite,
+                quantite_necessaire: quantite_necessaire.toFixed(2),
                 unite: unite,
-            }
+            })
         }
-        current_repas.ingredients[ingredients_id].quantite += quantite_necessaire
     }
 
     // On renvoie le tableau de menus de la semaine
