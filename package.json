@@ -1,0 +1,26 @@
+{
+  "name": "gestion-repas",
+  "version": "1.0.0",
+  "description": "Projet RTAI",
+  "private": "true",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --signal SIGTERM --require dotenv/config server.js",
+    "dev": "nodemon --signal SIGTERM --require dotenv/config server.js",
+    "migrate": "node --require dotenv/config ./api/migration.js",
+    "seed": "node --require dotenv/config ./api/seeder.js",
+    "migrate:seed": "node --require dotenv/config ./api/migration.js & node --require dotenv/config ./api/seeder.js"
+  },
+  "author": "Groupe 3",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "moment": "^2.29.4",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}

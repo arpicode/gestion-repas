@@ -1,0 +1,4 @@
+GET http://127.0.0.1:3000/api/menus
+
+### Doit récupérer les menus de la semaine du Lun 2023-04-17 au Dim 2023-04-23
+GET http://127.0.0.1:3000/api/menus/2023-04-15
