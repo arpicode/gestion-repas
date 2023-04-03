@@ -84,31 +84,11 @@ async function migrate() {
             ADD KEY recette_id (recette_id);
         `)
 
-        // await connection.query(`
-        //     ALTER TABLE ingredients
-        //     ADD PRIMARY KEY (id);
-        // `)
-
-        // await connection.query(`
-        //     ALTER TABLE menus
-        //     ADD PRIMARY KEY (id);
-        // `)
-
         await connection.query(`
             ALTER TABLE prevoir
             ADD PRIMARY KEY (menu_id,repas_id),
             ADD KEY repas_id (repas_id);
         `)
-
-        // await connection.query(`
-        //     ALTER TABLE recettes
-        //     ADD PRIMARY KEY (id);
-        // `)
-
-        // await connection.query(`
-        //     ALTER TABLE repas
-        //     ADD PRIMARY KEY (id);
-        // `)
 
         await connection.query(`
             ALTER TABLE utiliser
