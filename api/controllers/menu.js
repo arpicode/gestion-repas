@@ -12,8 +12,10 @@ const getAllMenusByDate = async (req, res) => {
 }
 
 const repasCreate = async (req, res) => {
-    console.log('REQ.BODY:', req.body)
+    // console.log('REQ.BODY:', req.body)
+    // console.log('REQ.PARAMS:', req.params)
     const result = await Menu.inserRepasByMenuId(req.params.menuId, req.body)
+
     if (!result.error) {
         res.status(201).json(result)
     } else {

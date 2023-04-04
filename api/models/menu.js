@@ -6,19 +6,19 @@ const Menu = {
         let json = { message: 'Server Error' }
 
         const selectSql = `
-        SELECT menus.id AS menu_id, menus.date_menu,
-        repas.id AS repas_id, repas.nb_convives,
-        recettes.id AS recette_id, recettes.nom AS recette_nom, recettes.nb_personnes,
-        ingredients.id AS ingredient_id, ingredients.nom AS ingredient_nom,
-                    utiliser.quantite, utiliser.unite
-                FROM menus
-                LEFT JOIN prevoir ON menus.id = prevoir.menu_id
-                LEFT JOIN repas ON prevoir.repas_id = repas.id
-                LEFT JOIN composer ON repas.id = composer.repas_id
-                LEFT JOIN recettes ON composer.recette_id = recettes.id
-                LEFT JOIN utiliser ON recettes.id = utiliser.recette_id
-                LEFT JOIN ingredients ON utiliser.ingredient_id = ingredients.id
-                WHERE date_menu BETWEEN ? AND DATE_ADD(?, INTERVAL 6 DAY)`
+            SELECT menus.id AS menu_id, menus.date_menu,
+                   repas.id AS repas_id, repas.nb_convives,
+                   recettes.id AS recette_id, recettes.nom AS recette_nom, recettes.nb_personnes,
+                   ingredients.id AS ingredient_id, ingredients.nom AS ingredient_nom,
+                   utiliser.quantite, utiliser.unite
+            FROM menus
+            LEFT JOIN prevoir ON menus.id = prevoir.menu_id
+            LEFT JOIN repas ON prevoir.repas_id = repas.id
+            LEFT JOIN composer ON repas.id = composer.repas_id
+            LEFT JOIN recettes ON composer.recette_id = recettes.id
+            LEFT JOIN utiliser ON recettes.id = utiliser.recette_id
+            LEFT JOIN ingredients ON utiliser.ingredient_id = ingredients.id
+            WHERE date_menu BETWEEN ? AND DATE_ADD(?, INTERVAL 6 DAY)`
 
         const insertSql = `INSERT INTO menus (date_menu) VALUES (?)`
 
@@ -75,6 +75,8 @@ const Menu = {
             await connection.execute(insertPrevoir, [menuId, repasId])
 
             await connection.commit()
+            json = { id: repasId, nb_convives: body.nb_convives }
+            console.log(`Created repas ${JSON.stringify(json)} for menuId: ${menuId}`)
         } catch (err) {
             console.log(err)
             await connection.rollback()
