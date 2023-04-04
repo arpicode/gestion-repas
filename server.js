@@ -4,7 +4,6 @@ const logger = require('morgan')
 const apiRouter = require('./api/routes/index')
 
 const PORT = process.env.PORT || 3000
-
 const app = express()
 
 app.use(logger('dev'))

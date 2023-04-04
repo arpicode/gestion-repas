@@ -1,17 +1,15 @@
 const pool = require('../db')
-const moment = require('moment')
 
 const Menu = {
     async getAllMenusOfWeekByDate(date) {
         let connection
-        let result = { message: 'Server Error' }
+        let json = { message: 'Server Error' }
 
-        try {
-            const selectSql = `
-                SELECT menus.id AS menu_id, menus.date_menu,
-                    repas.id AS repas_id, repas.nb_convives,
-                    recettes.id AS recette_id, recettes.nom AS recette_nom, recettes.nb_personnes,
-                    ingredients.id AS ingredient_id, ingredients.nom AS ingredient_nom,
+        const selectSql = `
+        SELECT menus.id AS menu_id, menus.date_menu,
+        repas.id AS repas_id, repas.nb_convives,
+        recettes.id AS recette_id, recettes.nom AS recette_nom, recettes.nb_personnes,
+        ingredients.id AS ingredient_id, ingredients.nom AS ingredient_nom,
                     utiliser.quantite, utiliser.unite
                 FROM menus
                 LEFT JOIN prevoir ON menus.id = prevoir.menu_id
@@ -22,73 +20,77 @@ const Menu = {
                 LEFT JOIN ingredients ON utiliser.ingredient_id = ingredients.id
                 WHERE date_menu BETWEEN ? AND DATE_ADD(?, INTERVAL 6 DAY)`
 
-            const insertSql = `INSERT INTO menus (date_menu) VALUES (?)`
+        const insertSql = `INSERT INTO menus (date_menu) VALUES (?)`
 
+        const monday = getMondayOfCurrentWeek(date)
+
+        try {
             connection = await pool.getConnection()
+            await connection.beginTransaction()
 
-            console.log('input date', date)
-            const monday = getMondayOfCurrentWeek(date)
-            console.log('monday of the week', monday)
             const [rows] = await connection.execute(selectSql, [monday, monday])
 
             // S'il n'y a pas encore de menus pour cette semaine
             if (rows.length === 0) {
-                console.log('pas encore de menus pour cette semaine')
                 // On crée les menus de la semaine
-                console.log('création des menus')
                 for (let i = 0; i < 7; i++) {
-                    // Add i days to the Monday date to get the date for the current iteration
                     let currentDate = new Date(monday)
-                    currentDate = new Date(currentDate.getTime() + i * 24 * 60 * 60 * 1000)
-                    currentDate = currentDate.toISOString().slice(0, 10)
-                    console.log('création du menu pour la date:', currentDate)
+                    currentDate = new Date(currentDate.getTime() + i * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
 
                     await connection.execute(insertSql, [currentDate])
                 }
 
                 // On retourne les menus de la semaine
                 const [rows] = await connection.execute(selectSql, [monday, monday])
-                result = menusSemaine(rows)
+                json = menusSemaine(rows)
             } else {
-                result = menusSemaine(rows)
+                json = menusSemaine(rows)
             }
+            await connection.commit()
         } catch (err) {
             console.log(err)
+            await connection.rollback()
         } finally {
             if (connection) connection.release()
-            return result
+            return json
+        }
+    },
+
+    async inserRepasByMenuId(menuId, body) {
+        let connection
+        let json = { error: 'Server Error' }
+
+        const insertRepasSql = `INSERT INTO repas (repas.nb_convives) VALUES (?)`
+        const insertPrevoir = `
+            INSERT INTO prevoir (prevoir.menu_id, prevoir.repas_id)
+            VALUES (?, ?)`
+
+        try {
+            connection = await pool.getConnection()
+            await connection.beginTransaction()
+
+            const [result] = await connection.execute(insertRepasSql, [body.nb_convives])
+            const repasId = result.insertId
+
+            await connection.execute(insertPrevoir, [menuId, repasId])
+
+            await connection.commit()
+        } catch (err) {
+            console.log(err)
+            await connection.rollback()
+        } finally {
+            if (connection) connection.release()
+            return json
         }
     },
 }
-
-// const getMondayOfCurrentWeek = (dateString) => {
-//     // Create a date object from the given date string
-//     const givenDate = new Date(dateString)
-
-//     // Get the day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-//     const dayOfWeek = givenDate.getDay()
-
-//     // If the given date is already a Monday, return it
-//     if (dayOfWeek === 1) {
-//         return givenDate.toISOString().slice(0, 10)
-//     }
-
-//     // Calculate the difference in days between the given date and the Monday of its week
-//     const daysToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek
-
-//     // Create a new date object for the Monday of the week
-//     const mondayDate = new Date(givenDate.getFullYear(), givenDate.getMonth(), givenDate.getDate() + daysToMonday)
-
-//     // Output the date of the Monday
-//     return mondayDate.toISOString().slice(0, 10)
-// }
 
 function getMondayOfCurrentWeek(dateString) {
     const date = new Date(dateString)
     const day = date.getDay()
     const diff = date.getDate() - day + (day === 0 ? -6 : 1)
-    const mondayDate = new Date(date.setDate(diff))
-    return mondayDate.toISOString().slice(0, 10)
+
+    return new Date(date.setDate(diff)).toISOString().slice(0, 10)
 }
 
 const menusSemaine = (result_rows) => {
@@ -119,7 +121,7 @@ const menusSemaine = (result_rows) => {
         if (currentMenu === null || currentMenu.id !== menu_id) {
             currentMenu = {
                 id: menu_id,
-                date: date_menu,
+                date_menu: date_menu,
                 repas: [],
             }
             menusSemaine.push(currentMenu)
