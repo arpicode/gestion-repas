@@ -114,6 +114,8 @@ async function migrate() {
             ADD CONSTRAINT utiliser_ibfk_2 FOREIGN KEY (ingredient_id) REFERENCES ingredients (id);
         `)
 
+        await connection.query(`ALTER TABLE menus ADD INDEX(date_menu);`)
+
         await connection.query(`SET FOREIGN_KEY_CHECKS=1;`)
         await connection.commit()
         console.log(`Migration completed successfully!`)
