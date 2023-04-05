@@ -1,6 +1,6 @@
 const Repas = require('../models/repas')
 
-const repasCreate = async (req, res) => {
+const create = async (req, res) => {
     // console.log('REQ.BODY:', req.body)
     // console.log('REQ.PARAMS:', req.params)
     const result = await Repas.inserRepasByMenuId(req.params.menuId, req.body)
@@ -12,11 +12,18 @@ const repasCreate = async (req, res) => {
     }
 }
 
-const repasDestroy = async (req, res) => {
-    console.log('pouf')
+const destroy = async (req, res) => {
+    // console.log('REQUEST PARAMS:', req.params)
+    const result = await Repas.deleteOne(req.params.id)
+
+    if (result?.error) {
+        return res.status(result.status).json(result)
+    }
+
+    return res.status(204).json(null)
 }
 
 module.exports = {
-    repasCreate,
-    repasDestroy,
+    create,
+    destroy,
 }

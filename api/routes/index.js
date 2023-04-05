@@ -20,7 +20,7 @@ router.route('/menus/:menuId/repas')
     .post(repasController.create)
 
 // prettier-ignore
-router.route('/menus/:menuId/repas/:repasId')
+router.route('/repas/:id')
     .delete(repasController.destroy)
 
 /**

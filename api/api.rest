@@ -5,9 +5,51 @@ GET http://127.0.0.1:3000/api/menus/2023-04-15
 GET http://127.0.0.1:3000/api/menus/2023-04-10
 
 ### Créer un repas pour le menu d'id 2
-POST http://127.0.0.1:3000/api/menus/2/repas
+POST http://127.0.0.1:3000/api/menus/15/repas
 Content-Type: application/json
 
 {
     "nb_convives": 8
 }
+
+### TODO: Modifier le repas d'id 8
+POST http://127.0.0.1:3000/api/repas/8
+Content-Type: application/json
+
+{
+    "nb_convives": 13
+}
+
+### Supprimer le repas d'id 12
+DELETE http://127.0.0.1:3000/api/repas/12
+
+### RECETTES
+
+### Récupérer toutes les recettes
+GET http://127.0.0.1:3000/api/recettes
+
+### Créer une recette et retourner le résultat
+POST http://127.0.0.1:3000/api/recettes
+Content-Type: application/json
+
+{
+    "nom": "Recette de Test",
+    "nb_personnes": 12,
+    "etapes": "1. bla, 2. blabla, 3. blablabla"
+}
+
+### Modifier la recette d'id 6 et retourner le résultat
+PUT http://127.0.0.1:3000/api/recettes/6
+Content-Type: application/json
+
+{
+    "nom": "Recette de Test",
+    "nb_personnes": 6,
+    "etapes": "1. bla. 2. blabla. 3. blablabla"
+}
+
+### Supprimer la recette d'id 6
+DELETE http://127.0.0.1:3000/api/recettes/6
+
+
+

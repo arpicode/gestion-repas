@@ -30,6 +30,33 @@ const Repas = {
             return json
         }
     },
+    async deleteOne(repasId) {
+        let connection
+        let json = { error: 'Server Error', status: 500 }
+
+        const sql = `DELETE FROM repas WHERE id = ?`
+
+        try {
+            connection = await pool.getConnection()
+            await connection.beginTransaction()
+
+            const [result] = await connection.execute(sql, [repasId])
+
+            await connection.commit()
+
+            if (result.affectedRows) {
+                json = null
+            } else {
+                json = { error: 'Bad Request', status: 400 }
+            }
+        } catch (err) {
+            console.error(err)
+            await connection.rollback()
+        } finally {
+            if (connection) connection.release()
+            return json
+        }
+    },
 }
 
 module.exports = Repas

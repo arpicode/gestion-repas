@@ -88,9 +88,8 @@ const Recette = {
             const [result] = await connection.execute(sql, [recetteId])
 
             await connection.commit()
-            console.log('AFFECTED ROW:', result.affectedRows)
+
             if (result.affectedRows) {
-                console.log('SETTING JSON TO NULL')
                 json = null
             } else {
                 json = { error: 'Bad Request', status: 400 }
