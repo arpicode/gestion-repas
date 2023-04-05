@@ -23,7 +23,9 @@ Content-Type: application/json
 ### Supprimer le repas d'id 12
 DELETE http://127.0.0.1:3000/api/repas/12
 
-### RECETTES
+
+
+### -------------------------- RECETTES
 
 ### Récupérer toutes les recettes
 GET http://127.0.0.1:3000/api/recettes
@@ -50,6 +52,32 @@ Content-Type: application/json
 
 ### Supprimer la recette d'id 6
 DELETE http://127.0.0.1:3000/api/recettes/6
+
+
+
+### -------------------------- INGREDIENTS
+
+### Récupérer toutes les ingredients
+GET http://127.0.0.1:3000/api/ingredients
+
+### Créer une ingredient et retourner le résultat
+POST http://127.0.0.1:3000/api/ingredients
+Content-Type: application/json
+
+{
+    "nom": "Ingredient de Test"
+}
+
+### Modifier l'ingredient d'id 21 et retourner le résultat
+PUT http://127.0.0.1:3000/api/ingredients/21
+Content-Type: application/json
+
+{
+    "nom": "Recette de Test PUT"
+}
+
+### Supprimer l'ingredient d'id 21
+DELETE http://127.0.0.1:3000/api/ingredients/21
 
 
 
