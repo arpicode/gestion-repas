@@ -75,7 +75,6 @@ async function seed() {
                 (5, "2023-04-21"),
                 (6, "2023-04-22"),
                 (7, "2023-04-23"),
-
                 (8, "2023-04-03"),
                 (9, "2023-04-04"),
                 (10, "2023-04-05"),
@@ -94,7 +93,6 @@ async function seed() {
                 (5, 6),
                 (6, 1),
                 (7, 1),
-                
                 (8, 3),
                 (9, 3),
                 (10, 3),
@@ -117,7 +115,6 @@ async function seed() {
                 (5, 2),
                 (5, 1),
                 (5, 5),
-
                 (8, 3),
                 (8, 5),
                 (9, 2),
@@ -139,7 +136,6 @@ async function seed() {
                 (3, 7),
                 (5, 4),
                 (5, 5),
-
                 (8, 3),
                 (10, 9),
                 (11, 10),
@@ -148,9 +144,9 @@ async function seed() {
 
         await connection.commit()
         console.log(`Seeding completed successfully`)
-    } catch (error) {
+    } catch (err) {
+        console.error(`Error running seeder: ${err.message}`)
         await connection.rollback()
-        console.error(`Error running seeder: ${error.message}`)
     } finally {
         process.emit('SIGINT')
     }
