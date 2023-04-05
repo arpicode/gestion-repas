@@ -98,20 +98,20 @@ async function migrate() {
 
         await connection.query(`
             ALTER TABLE composer
-            ADD CONSTRAINT composer_ibfk_1 FOREIGN KEY (repas_id) REFERENCES repas (id),
-            ADD CONSTRAINT composer_ibfk_2 FOREIGN KEY (recette_id) REFERENCES recettes (id);
+            ADD CONSTRAINT composer_ibfk_1 FOREIGN KEY (repas_id) REFERENCES repas (id) ON DELETE CASCADE,
+            ADD CONSTRAINT composer_ibfk_2 FOREIGN KEY (recette_id) REFERENCES recettes (id) ON DELETE CASCADE;
         `)
 
         await connection.query(`
             ALTER TABLE prevoir
-            ADD CONSTRAINT prevoir_ibfk_1 FOREIGN KEY (menu_id) REFERENCES menus (id),
-            ADD CONSTRAINT prevoir_ibfk_2 FOREIGN KEY (repas_id) REFERENCES repas (id);
+            ADD CONSTRAINT prevoir_ibfk_1 FOREIGN KEY (menu_id) REFERENCES menus (id) ON DELETE CASCADE,
+            ADD CONSTRAINT prevoir_ibfk_2 FOREIGN KEY (repas_id) REFERENCES repas (id) ON DELETE CASCADE;
         `)
 
         await connection.query(`
             ALTER TABLE utiliser
-            ADD CONSTRAINT utiliser_ibfk_1 FOREIGN KEY (recette_id) REFERENCES recettes (id),
-            ADD CONSTRAINT utiliser_ibfk_2 FOREIGN KEY (ingredient_id) REFERENCES ingredients (id);
+            ADD CONSTRAINT utiliser_ibfk_1 FOREIGN KEY (recette_id) REFERENCES recettes (id) ON DELETE CASCADE,
+            ADD CONSTRAINT utiliser_ibfk_2 FOREIGN KEY (ingredient_id) REFERENCES ingredients (id) ON DELETE CASCADE;
         `)
 
         await connection.query(`ALTER TABLE menus ADD INDEX(date_menu);`)
