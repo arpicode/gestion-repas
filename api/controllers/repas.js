@@ -23,7 +23,19 @@ const destroy = async (req, res) => {
     return res.status(204).json(null)
 }
 
+const destroyRecette = async (req, res) => {
+    // console.log('REQUEST PARAMS:', req.params)
+    const result = await Repas.deleteOne(req.params.repasId, req.params.recetteId)
+
+    if (result?.error) {
+        return res.status(result.status).json(result)
+    }
+
+    return res.status(204).json(null)
+}
+
 module.exports = {
     create,
     destroy,
+    destroyRecette,
 }

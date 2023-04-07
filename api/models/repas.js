@@ -57,6 +57,33 @@ const Repas = {
             return json
         }
     },
+    async deleteOneRecette(repasId, recetteId) {
+        let connection
+        let json = { error: 'Server Error', status: 500 }
+
+        const sql = `DELETE FROM composer WHERE repas_id = ? AND recette_id = ?`
+
+        try {
+            connection = await pool.getConnection()
+            await connection.beginTransaction()
+
+            const [result] = await connection.execute(sql, [repasId, recetteId])
+
+            await connection.commit()
+
+            if (result.affectedRows) {
+                json = null
+            } else {
+                json = { error: 'Bad Request', status: 400 }
+            }
+        } catch (err) {
+            console.error(err)
+            await connection.rollback()
+        } finally {
+            if (connection) connection.release()
+            return json
+        }
+    },
 }
 
 module.exports = Repas

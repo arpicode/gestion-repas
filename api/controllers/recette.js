@@ -40,9 +40,20 @@ const destroy = async (req, res) => {
     return res.status(204).json(null)
 }
 
+const destroyIngredient = async (req, res) => {
+    const result = await Recette.deleteOneIngredient(req.params.recetteId, req.params.ingredientId)
+
+    if (result?.error) {
+        return res.status(result.status).json(result)
+    }
+
+    return res.status(204).json(null)
+}
+
 module.exports = {
     index,
     store,
     update,
     destroy,
+    destroyIngredient,
 }

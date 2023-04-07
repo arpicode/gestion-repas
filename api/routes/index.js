@@ -11,31 +11,39 @@ const ingredientController = require('../controllers/ingredient')
  */
 // prettier-ignore
 router.route('/menus/:date')
-.get(menuController.getAllMenusByDate)
+    .get(menuController.getAllMenusByDate)
 
 /**
  * Routes des repas
  */
 // prettier-ignore
 router.route('/menus/:menuId/repas')
-.post(repasController.create)
+    .post(repasController.create)
 
 // prettier-ignore
 router.route('/repas/:id')
-.delete(repasController.destroy)
+    .delete(repasController.destroy)
+
+// prettier-ignore
+router.route('/repas/:repasId/recettes/:recetteId')
+    .delete(repasController.destroyRecette)
 
 /**
  * Routes des recettes
  */
 // prettier-ignore
 router.route('/recettes')
-.get(recetteController.index)
-.post(recetteController.store)
+    .get(recetteController.index)
+    .post(recetteController.store)
 
 // prettier-ignore
 router.route('/recettes/:id')
-.put(recetteController.update)
-.delete(recetteController.destroy)
+    .put(recetteController.update)
+    .delete(recetteController.destroy)
+
+// prettier-ignore
+router.route('/recettes/:recetteId/ingredients/:ingredientId')
+    .delete(recetteController.destroyIngredient)
 
 /**
  * Routes des ingredients

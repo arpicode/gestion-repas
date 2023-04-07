@@ -18,7 +18,8 @@ const Menu = {
             LEFT JOIN recettes ON composer.recette_id = recettes.id
             LEFT JOIN utiliser ON recettes.id = utiliser.recette_id
             LEFT JOIN ingredients ON utiliser.ingredient_id = ingredients.id
-            WHERE date_menu BETWEEN ? AND DATE_ADD(?, INTERVAL 6 DAY)`
+            WHERE date_menu BETWEEN ? AND DATE_ADD(?, INTERVAL 6 DAY)
+            ORDER BY menus.date_menu`
 
         const insertSql = `INSERT INTO menus (date_menu) VALUES (?)`
 
@@ -86,7 +87,6 @@ const menusSemaine = (result_rows) => {
             ingredient_nom,
             quantite,
             unite,
-            test,
         } = row
 
         // Si c'est un nouveau menu, on l'ajoute au tableau de menus de la semaine
