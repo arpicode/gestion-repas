@@ -3,9 +3,6 @@
 ### Doit récupérer les menus, repas, recettes, ingredients de la semaine du Lun 2023-04-10 au Dim 2023-04-16
 GET http://127.0.0.1:3000/api/menus/2023-04-15
 
-### Doit récupérer les mêmes menus, repas, recettes, ingredients que la requête précedente
-GET http://127.0.0.1:3000/api/menus/2023-04-10
-
 ### Créer un repas pour le menu d'id 15
 POST http://127.0.0.1:3000/api/menus/15/repas
 Content-Type: application/json
@@ -18,17 +15,36 @@ Content-Type: application/json
 
 ### -------------------------- REPAS
 
+### Met à jour le nombre de convives d'un repas et/ou la recette d'un repas (ajoute la recette si elle n'existe pas)
+PUT http://127.0.0.1:3000/api/repas/3/recettes/3
+Content-Type: application/json
+
+{
+    "nb_convives": 4,
+    "recettes": [
+        {
+            "id": 3
+        },
+        {
+            "id": 5
+        }
+    ]
+
+}
+
 ### TODO: Modifier le repas d'id 8
-POST http://127.0.0.1:3000/api/repas/8
+PUT http://127.0.0.1:3000/api/repas/8
 Content-Type: application/json
 
 {
     "nb_convives": 13
 }
 
-### Supprimer le repas d'id 15
-DELETE http://127.0.0.1:3000/api/repas/15
+### Supprimer le repas par son id
+DELETE http://127.0.0.1:3000/api/repas/12
 
+### Supprimer pour le repas avec repasId la recette recetteId
+DELETE http://127.0.0.1:3000/api/repas/3/recettes/3
 
 
 ### -------------------------- RECETTES
@@ -36,7 +52,7 @@ DELETE http://127.0.0.1:3000/api/repas/15
 ### Récupérer toutes les recettes
 GET http://127.0.0.1:3000/api/recettes
 
-### Créer une recette et retourner le résultat
+### Créer une recette sans ingrédients et retourner le résultat
 POST http://127.0.0.1:3000/api/recettes
 Content-Type: application/json
 
@@ -46,18 +62,77 @@ Content-Type: application/json
     "etapes": "1. bla, 2. blabla, 3. blablabla"
 }
 
+### Créer une recette avec ingrédients et retourner le résultat
+POST http://127.0.0.1:3000/api/recettes
+Content-Type: application/json
+
+{
+    "nom": "Carrotes aux Oignons",
+    "nb_personnes": 3,
+    "etapes": "1. bla, 2. blabla, 3. blablabla",
+    "ingredients": [
+        {
+            "id": 8,
+            "nom": "carotte",
+            "utiliser": {
+                "quantite": "10.00",
+                "unite": "unité(s)"
+            }
+        },
+        {
+            "id": 3,
+            "nom": "oignon",
+            "utiliser": {
+                "quantite": "5.00",
+                "unite": "unité(s)"
+            }
+        }
+    ]
+}
+
+### Modifier la recette d'id 6 et retourner le résultat
+PUT http://127.0.0.1:3000/api/recettes/8
+Content-Type: application/json
+
+{
+    "nom": "Recette de Test",
+    "nb_personnes": 33,
+    "etapes": "1. bla. 2. blabla. 3. blablabla"
+}
+
 ### Modifier la recette d'id 6 et retourner le résultat
 PUT http://127.0.0.1:3000/api/recettes/6
 Content-Type: application/json
 
 {
-    "nom": "Recette de Test",
-    "nb_personnes": 6,
-    "etapes": "1. bla. 2. blabla. 3. blablabla"
+    "nom": "Carrotes aux Oignons",
+    "nb_personnes": 3,
+    "etapes": "1. bla, 2. blabla, 3. blablabla",
+    "ingredients": [
+        {
+            "id": 8,
+            "nom": "carottes",
+            "utiliser": {
+                "quantite": "18.00",
+                "unite": "unité(s)"
+            }
+        },
+        {
+            "id": 3,
+            "nom": "oignon",
+            "utiliser": {
+                "quantite": "13.00",
+                "unite": "unité(s)"
+            }
+        }
+    ]
 }
 
 ### Supprimer la recette d'id 6
 DELETE http://127.0.0.1:3000/api/recettes/6
+
+### Supprimer de la recette d'id 6 l'ingredient d'id 2
+DELETE http://127.0.0.1:3000/api/recettes/6/ingredients/3
 
 
 
@@ -86,4 +161,7 @@ Content-Type: application/json
 DELETE http://127.0.0.1:3000/api/ingredients/21
 
 
+### -------------------------- STATISTIQUES
 
+### Récupère tous les ingrédients et leur quantité pour 1 mois
+GET http://127.0.0.1:3000/api/menus/2023-04-15/ingredients

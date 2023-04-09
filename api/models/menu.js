@@ -19,7 +19,7 @@ const Menu = {
             LEFT JOIN utiliser ON recettes.id = utiliser.recette_id
             LEFT JOIN ingredients ON utiliser.ingredient_id = ingredients.id
             WHERE date_menu BETWEEN ? AND DATE_ADD(?, INTERVAL 6 DAY)
-            ORDER BY menus.date_menu`
+            ORDER BY menus.date_menu, repas.id, recettes.nom`
 
         const insertSql = `INSERT INTO menus (date_menu) VALUES (?)`
 
@@ -56,6 +56,40 @@ const Menu = {
             return json
         }
     },
+    async getAllIngredientsForTheMonth(date) {
+        let connection
+        let json = { error: 'Server Error', status: 500 }
+
+        const sql = `
+            SELECT ingredients.nom AS ingredient,
+                   SUM(utiliser.quantite * repas.nb_convives / recettes.nb_personnes) AS quantite_totale,
+                   utiliser.unite AS unite
+            FROM menus
+            JOIN prevoir ON menus.id = prevoir.menu_id
+            JOIN repas ON prevoir.repas_id = repas.id
+            JOIN composer ON repas.id = composer.repas_id
+            JOIN recettes ON composer.recette_id = recettes.id
+            JOIN utiliser ON recettes.id = utiliser.recette_id
+            JOIN ingredients ON utiliser.ingredient_id = ingredients.id
+            WHERE menus.date_menu BETWEEN '2023-04-01' AND DATE_ADD('2023-04-01', INTERVAL 1 MONTH)
+            GROUP BY ingredients.nom
+            ORDER BY ingredients.nom`
+
+        const firstDay = getFirstDayOfTheMonth(date)
+
+        try {
+            connection = await pool.getConnection()
+
+            const [rows] = await connection.execute(sql, [firstDay, firstDay])
+
+            json = JSON.stringify(rows)
+        } catch (err) {
+            console.log(err)
+        } finally {
+            if (connection) connection.release()
+            return json
+        }
+    },
 }
 
 function getMondayOfCurrentWeek(dateString) {
@@ -64,6 +98,14 @@ function getMondayOfCurrentWeek(dateString) {
     const diff = date.getDate() - day + (day === 0 ? -6 : 1)
 
     return new Date(date.setDate(diff)).toISOString().slice(0, 10)
+}
+
+function getFirstDayOfTheMonth(dateString) {
+    const date = new Date(dateString)
+    const year = date.getFullYear()
+    const month = date.getMonth()
+    const firstDay = new Date(year, month, 1)
+    return firstDay.toISOString().slice(0, 10)
 }
 
 const menusSemaine = (result_rows) => {

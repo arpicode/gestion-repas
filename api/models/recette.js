@@ -116,7 +116,7 @@ const Recette = {
 
             let numAffectedRows = 0
             if (body.ingredients) {
-                for (ingredient of body.ingredients) {
+                for (const ingredient of body.ingredients) {
                     const [resultUtiliserExists] = await connection.execute(sqlUtiliserExists, [
                         +recetteId,
                         ingredient.id,
@@ -245,7 +245,7 @@ const rowsToRecettes = (rows) => {
 
         // Si c'est une nouvelle recette, on l'ajoute au tableau de recettes.
         if (currentRecette === null || currentRecette.id !== recette_id) {
-            // Créer un nouvelle recette.
+            // Créer une nouvelle recette.
             currentRecette = {
                 id: recette_id,
                 nom: recette_nom,

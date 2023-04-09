@@ -11,6 +11,18 @@ const getAllMenusByDate = async (req, res) => {
     return res.status(500).json(sqlResult)
 }
 
+const getAllIngredientsForMonth = async (req, res) => {
+    const date = req.params.date
+    const result = await Menu.getAllIngredientsForTheMonth(date)
+
+    if (!result.error) {
+        return res.status(200).json(result)
+    }
+
+    return res.status(error.status).json(result)
+}
+
 module.exports = {
     getAllMenusByDate,
+    getAllIngredientsForMonth,
 }

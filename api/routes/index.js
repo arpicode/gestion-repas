@@ -12,6 +12,9 @@ const ingredientController = require('../controllers/ingredient')
 // prettier-ignore
 router.route('/menus/:date')
     .get(menuController.getAllMenusByDate)
+// prettier-ignore
+router.route('/menus/:date/ingredients')
+    .get(menuController.getAllIngredientsForMonth)
 
 /**
  * Routes des repas
@@ -19,6 +22,10 @@ router.route('/menus/:date')
 // prettier-ignore
 router.route('/menus/:menuId/repas')
     .post(repasController.create)
+
+// prettier-ignore
+router.route('/repas/:repasId/recettes/:recetteId')
+    .put(repasController.update)
 
 // prettier-ignore
 router.route('/repas/:id')
