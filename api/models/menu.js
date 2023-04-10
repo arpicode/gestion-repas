@@ -71,8 +71,49 @@ const Menu = {
             JOIN recettes ON composer.recette_id = recettes.id
             JOIN utiliser ON recettes.id = utiliser.recette_id
             JOIN ingredients ON utiliser.ingredient_id = ingredients.id
-            WHERE menus.date_menu BETWEEN '2023-04-01' AND DATE_ADD('2023-04-01', INTERVAL 1 MONTH)
+            WHERE menus.date_menu BETWEEN ? AND DATE_ADD(?, INTERVAL 1 MONTH)
             GROUP BY ingredients.nom
+            ORDER BY ingredients.nom`
+
+        const firstDay = getFirstDayOfTheMonth(date)
+
+        try {
+            connection = await pool.getConnection()
+
+            const [rows] = await connection.execute(sql, [firstDay, firstDay])
+
+            json = JSON.stringify(rows)
+        } catch (err) {
+            console.log(err)
+        } finally {
+            if (connection) connection.release()
+            return json
+        }
+    },
+    async getUsagePercentageOfIngredients(date) {
+        let connection
+        let json = { error: 'Server Error', status: 500 }
+
+        const sql = `
+            SELECT ingredients.nom AS ingredient,
+            COUNT(*) AS total_utilisations,
+            COUNT(*) / (SELECT COUNT(*)
+                FROM utiliser 
+                JOIN recettes ON utiliser.recette_id = recettes.id 
+                JOIN composer ON recettes.id = composer.recette_id 
+                JOIN repas ON composer.repas_id = repas.id 
+                JOIN prevoir ON repas.id = prevoir.repas_id 
+                JOIN menus ON prevoir.menu_id = menus.id 
+                WHERE menus.date_menu BETWEEN '2023-04-01' AND '2023-04-30') * 100 AS pourcentage_utilisation
+            FROM utiliser
+            JOIN ingredients ON utiliser.ingredient_id = ingredients.id
+            JOIN recettes ON utiliser.recette_id = recettes.id
+            JOIN composer ON composer.recette_id = recettes.id
+            JOIN repas ON composer.repas_id = repas.id
+            JOIN prevoir ON prevoir.repas_id = repas.id
+            JOIN menus ON prevoir.menu_id = menus.id
+            WHERE menus.date_menu BETWEEN '2023-04-01' AND '2023-04-30'
+            GROUP BY ingredients.id
             ORDER BY ingredients.nom`
 
         const firstDay = getFirstDayOfTheMonth(date)

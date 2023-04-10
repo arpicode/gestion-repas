@@ -12,9 +12,14 @@ const ingredientController = require('../controllers/ingredient')
 // prettier-ignore
 router.route('/menus/:date')
     .get(menuController.getAllMenusByDate)
+
 // prettier-ignore
 router.route('/menus/:date/ingredients')
     .get(menuController.getAllIngredientsForMonth)
+
+// prettier-ignore
+router.route('/menus/:date/ingredients/percents')
+    .get(menuController.getUsagePercentageOfIngredients)
 
 /**
  * Routes des repas
