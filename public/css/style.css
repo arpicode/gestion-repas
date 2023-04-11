@@ -1,6 +1,11 @@
 body {
     font-family: poppins, sans-serif;
 }
+
+main {
+    padding-bottom: 5rem;
+}
+
 .repas-container > * {
     flex: 1 1 12rem;
     /* max-width: 12rem; */
