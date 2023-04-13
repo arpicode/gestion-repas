@@ -16,6 +16,12 @@
     <link rel="stylesheet" href="./css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .table-container {
+            height: 15rem;
+            overflow-y: auto;
+        }
+    </style>
 
     <title>Gestion Repas</title>
 </head>
@@ -58,18 +64,19 @@
 
             <h4>List des Ingredients pour le Mois</h4>
 
-            <table id="month-ingredients" class="table table-hover table-sm small">
-                <thead>
-                    <tr>
-                        <th>Ingredients</th>
-                        <th>Quantité</th>
-                        <th>Unité</th>
-                    </tr>
-                </thead>
-                <tbody class="table-group-divider">
-
-                </tbody>
-            </table>
+            <div class="table-container">
+                <table id="month-ingredients" class="table table-hover table-sm small">
+                    <thead>
+                        <tr>
+                            <th>Ingredients</th>
+                            <th>Quantité</th>
+                            <th class="ps-2">Unité</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                    </tbody>
+                </table>
+            </div>
 
             <div class="row">
                 <div class="col">

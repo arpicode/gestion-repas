@@ -10,7 +10,7 @@
             .done((data) => {
                 renderIngredientsOfMonth(JSON.parse(data))
             })
-            .fail(() => console.error('Error while getting menus of the week.'))
+            .fail(() => console.error('Error while getting ingredients of the month.'))
     }
 
     const getUsagePercentageOfIngredients = () => {
@@ -24,7 +24,7 @@
             .done((data) => {
                 renderIngredientsPieChart(JSON.parse(data))
             })
-            .fail(() => console.error('Error while getting menus of the week.'))
+            .fail(() => console.error('Error while getting ingredients percentages.'))
     }
 
     const renderIngredientsOfMonth = (data) => {
@@ -34,7 +34,7 @@
                 `<tr>
                  <td>${ingredient.ingredient}</td>
                  <td class="text-end" style="width: 1%;">${(+ingredient.quantite_totale).toFixed(2)}</td>
-                 <td>${ingredient.unite}</td>
+                 <td class="ps-2">${ingredient.unite}</td>
                  </tr>`
             )
         })
@@ -46,17 +46,11 @@
         new Chart(ingredientPercentCtx, {
             type: 'pie',
             data: {
-                // labels: data.map((e) => new Date(e.date).toLocaleDateString()),
-                labels: data.map((e) => e.ingredient), //['Red', 'Orange', 'Yellow', 'Green'],
+                labels: data.map((e) => e.ingredient),
                 datasets: [
                     {
                         label: 'Utilisation des Ingrédients dans le Mois',
-                        data: data.map((e) => e.pourcentage_utilisation), //[12, 3, 56, 29], //data.map((e) => e.duree),
-                        borderWidth: 2,
-                        lineTension: 0.2,
-                        fill: true,
-                        // borderColor: 'rgba(75,192,192,1)',
-                        // backgroundColor: 'rgba(75,192,192,0.1)',
+                        data: data.map((e) => e.pourcentage_utilisation),
                     },
                 ],
             },

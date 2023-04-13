@@ -52,8 +52,8 @@ async function migrate() {
             CREATE TABLE recettes (
                 id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 nom varchar(50) DEFAULT NULL,
-                nb_personnes int(11) DEFAULT NULL,
-                etapes text DEFAULT NULL
+                nb_personnes int(11) DEFAULT 1,
+                etapes text DEFAULT "(vide)"
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         `)
 
@@ -72,8 +72,8 @@ async function migrate() {
             CREATE TABLE utiliser (
                 recette_id int(11) NOT NULL,
                 ingredient_id int(11) NOT NULL,
-                quantite decimal(6,2) DEFAULT NULL,
-                unite varchar(50) DEFAULT NULL
+                quantite decimal(6,2) DEFAULT 0,
+                unite varchar(50) DEFAULT ''
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
         `)

@@ -191,20 +191,6 @@ const renderRecettes = (repasId) => {
     }
 }
 
-// --- Utils
-
-const debounce = (fn, delay = 200) => {
-    let timeoutId
-
-    return function (...args) {
-        clearTimeout(timeoutId)
-
-        timeoutId = setTimeout(() => {
-            fn.apply(this, args)
-        }, delay)
-    }
-}
-
 // --- Event listeners
 
 $('#btn-previous').on('click', () => {
@@ -316,7 +302,7 @@ const onUpdateRepas = (event) => {
     if (isNaN(convivesRepasId)) {
         const recettes = repas.find('.recettes-select')
         recettes.each((i, recette) => {
-            payload.recettes.push({ id: recette.value })
+            payload.recettes.push({ id: +recette.value })
         })
     }
 
