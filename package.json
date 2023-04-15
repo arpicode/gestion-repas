@@ -7,8 +7,7 @@
   "scripts": {
     "start": "node --require dotenv/config server.js",
     "dev": "nodemon --signal SIGTERM --require dotenv/config server.js",
-    "migrate": "node --require dotenv/config ./api/migration.js",
-    "migrate:seed": "node --require dotenv/config ./api/migration.js & node --require dotenv/config ./api/seeder.js"
+    "migrate": "node --require dotenv/config ./api/migration.js & node --require dotenv/config ./api/seeder.js"
   },
   "author": "Groupe 3",
   "license": "MIT",

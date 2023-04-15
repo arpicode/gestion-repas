@@ -33,8 +33,20 @@ const getUsagePercentageOfIngredients = async (req, res) => {
     return res.status(error.status).json(result)
 }
 
+const getNumberOfEachRecettes = async (req, res) => {
+    const date = req.params.date
+    const result = await Menu.countRecettesOfMonth(date)
+
+    if (!result.error) {
+        return res.status(200).json(result)
+    }
+
+    return res.status(error.status).json(result)
+}
+
 module.exports = {
     getAllMenusByDate,
     getAllIngredientsForMonth,
     getUsagePercentageOfIngredients,
+    getNumberOfEachRecettes,
 }

@@ -52,8 +52,8 @@ async function migrate() {
             CREATE TABLE recettes (
                 id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 nom varchar(50) DEFAULT NULL,
-                nb_personnes int(11) DEFAULT 1,
-                etapes text DEFAULT "(vide)"
+                nb_personnes int(11) DEFAULT NULL,
+                etapes text DEFAULT NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         `)
 

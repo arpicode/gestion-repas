@@ -104,7 +104,7 @@ const Menu = {
                 JOIN repas ON composer.repas_id = repas.id 
                 JOIN prevoir ON repas.id = prevoir.repas_id 
                 JOIN menus ON prevoir.menu_id = menus.id 
-                WHERE menus.date_menu BETWEEN '2023-04-01' AND '2023-04-30') * 100 AS pourcentage_utilisation
+                WHERE menus.date_menu BETWEEN ? AND DATE_ADD(?, INTERVAL 1 MONTH)) * 100 AS pourcentage_utilisation
             FROM utiliser
             JOIN ingredients ON utiliser.ingredient_id = ingredients.id
             JOIN recettes ON utiliser.recette_id = recettes.id
@@ -112,7 +112,7 @@ const Menu = {
             JOIN repas ON composer.repas_id = repas.id
             JOIN prevoir ON prevoir.repas_id = repas.id
             JOIN menus ON prevoir.menu_id = menus.id
-            WHERE menus.date_menu BETWEEN '2023-04-01' AND '2023-04-30'
+            WHERE menus.date_menu BETWEEN ? AND DATE_ADD(?, INTERVAL 1 MONTH)
             GROUP BY ingredients.id
             ORDER BY ingredients.nom`
 
@@ -121,11 +121,41 @@ const Menu = {
         try {
             connection = await pool.getConnection()
 
-            const [rows] = await connection.execute(sql, [firstDay, firstDay])
+            const [rows] = await connection.execute(sql, [firstDay, firstDay, firstDay, firstDay])
 
             json = JSON.stringify(rows)
         } catch (err) {
             console.log(err)
+        } finally {
+            if (connection) connection.release()
+            return json
+        }
+    },
+    async countRecettesOfMonth(date) {
+        let connection
+        let json = { error: 'Server Error', status: 500 }
+
+        const sql = `
+            SELECT recettes.nom, COUNT(*) AS nb_recettes
+            FROM recettes
+            LEFT JOIN composer ON recettes.id = composer.recette_id
+            LEFT JOIN repas ON composer.repas_id = repas.id
+            LEFT JOIN prevoir ON repas.id = prevoir.repas_id
+            LEFT JOIN menus ON prevoir.menu_id = menus.id
+            WHERE menus.date_menu BETWEEN ? AND DATE_ADD(?, INTERVAL 1 MONTH)
+            GROUP BY recettes.nom
+            ORDER BY recettes.nom`
+
+        const firstDay = getFirstDayOfTheMonth(date)
+
+        try {
+            connection = await pool.getConnection()
+
+            const [rows] = await connection.execute(sql, [firstDay, firstDay])
+
+            json = JSON.parse(JSON.stringify(rows))
+        } catch (err) {
+            console.error(err)
         } finally {
             if (connection) connection.release()
             return json

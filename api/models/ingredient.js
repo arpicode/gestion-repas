@@ -5,7 +5,9 @@ const Ingredient = {
         let connection
         let json = { error: 'Server Error', status: 500 }
 
-        const sql = `SELECT * FROM ingredients`
+        const sql = `
+            SELECT * FROM ingredients
+            ORDER BY nom`
 
         try {
             connection = await pool.getConnection()
@@ -24,14 +26,16 @@ const Ingredient = {
         let json = { error: 'Server Error', status: 500 }
 
         const sql = `
-            INSERT INTO ingredients (nom)
-            VALUES (?)`
+            INSERT INTO ingredients (id, nom)
+            VALUES (?, ?)
+            ON DUPLICATE KEY
+            UPDATE id = ?, nom = ?`
 
         try {
             connection = await pool.getConnection()
             await connection.beginTransaction()
 
-            const [result] = await connection.execute(sql, [body.nom])
+            const [result] = await connection.execute(sql, [+body.id, body.nom, +body.id, body.nom])
 
             await connection.commit()
 

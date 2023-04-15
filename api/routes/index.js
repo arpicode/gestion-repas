@@ -18,6 +18,10 @@ router.route('/menus/:date/ingredients')
     .get(menuController.getAllIngredientsForMonth)
 
 // prettier-ignore
+router.route('/menus/:date/recettes')
+    .get(menuController.getNumberOfEachRecettes)
+
+// prettier-ignore
 router.route('/menus/:date/ingredients/percents')
     .get(menuController.getUsagePercentageOfIngredients)
 

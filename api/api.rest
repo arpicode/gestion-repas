@@ -167,3 +167,6 @@ GET http://127.0.0.1:3000/api/menus/2023-04-15/ingredients/percents
 
 ### Récupère tous les ingrédients et leur quantité pour 1 mois
 GET http://127.0.0.1:3000/api/menus/2023-04-15/ingredients
+
+### Le nombre de chaque recette dans le mois
+GET http://127.0.0.1:3000/api/menus/2023-04-15/recettes

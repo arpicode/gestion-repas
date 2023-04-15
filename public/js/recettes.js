@@ -101,7 +101,7 @@ const onSaveRecette = () => {
                 payload.ingredients.push(currentIngredient)
             }
         })
-        console.log(payload)
+
         $.ajax({
             url: `/api/recettes`,
             method: 'POST',
@@ -111,6 +111,9 @@ const onSaveRecette = () => {
             .done((data) => {
                 getAllRecettes()
                 console.dir(`Created recette ${JSON.stringify(data)}.`)
+                $('.recettes-list').toggleClass('d-none')
+                $('.recette').toggleClass('d-none')
+                resetForm()
             })
             .fail(() => console.error(`Error while adding recette.`))
     }
@@ -124,7 +127,7 @@ const onRemoveRecette = (event) => {
         method: 'DELETE',
     })
         .done(() => {
-            recettes = getAllRecettes()
+            getAllRecettes()
         })
         .fail(() => console.error(`Error while removing recette: ${recetteId}.`))
 }
@@ -149,6 +152,12 @@ $('.add-ingredient-btn').on('click', onAddIngredient)
 
 const onChangeNewIngredient = (event) => {
     event.currentTarget.parentElement.id = `ingredient-id-${event.currentTarget.value}`
+}
+
+const resetForm = () => {
+    $('.ingredients-container').html('')
+    $('.nb-personnes').val('')
+    $('.etapes').val('')
 }
 
 // --- Init.
