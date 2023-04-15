@@ -6,9 +6,7 @@ const Repas = {
         let json = { error: 'Server Error' }
 
         const insertRepasSql = `INSERT INTO repas (repas.nb_convives) VALUES (?)`
-        const insertPrevoir = `
-            INSERT INTO prevoir (prevoir.menu_id, prevoir.repas_id)
-            VALUES (?, ?)`
+        const insertPrevoir = `INSERT INTO prevoir (prevoir.menu_id, prevoir.repas_id) VALUES (?, ?)`
 
         try {
             connection = await pool.getConnection()

@@ -87,11 +87,13 @@ const onEditIngredient = (event) => {
     $('.add-ingredient-form').removeClass('d-none')
     $('#save-ingredient-btn').attr('data-ingredient-id', id)
     $('#ingredient-input').val(name)
+    $('#ingredient-input').trigger('focus')
 }
 
 $('#new-ingredient-btn').on('click', () => {
     $('#save-ingredient-btn').attr('data-ingredient-id', 0)
     $('.add-ingredient-form').removeClass('d-none')
+    $('#ingredient-input').trigger('focus')
 })
 
 $('#save-ingredient-btn').on('click', onSaveIngredient)

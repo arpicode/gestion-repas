@@ -102,7 +102,7 @@
           </div>
           <div class="col mt-3 mt-lg-0">
             <label class="form-label" for="">Etapes</label>
-            <textarea class="etapes form-control" cols="30" rows="10"></textarea>
+            <textarea class="etapes form-control"></textarea>
           </div>
 
         </div>
@@ -116,8 +116,8 @@
   <template id="ingredient-template">
     <div class="ingredient d-flex gap-1 mb-1">
       <select class="ingredients-select form-select form-select-sm"></select>
-      <input class="qte-ingredient form-control form-control-sm" type="number" min="0" placeholder="qté."
-        style="width: 4.5rem;">
+      <input class="qte-ingredient form-control form-control-sm" type="text" value="0.00" placeholder="qté."
+        style="width: 5rem;">
       <input class="unite-ingredient form-control form-control-sm" type="text" placeholder="unité"
         style="width: 5.5rem;">
       <button class="remove-ingredient-btn btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></button>

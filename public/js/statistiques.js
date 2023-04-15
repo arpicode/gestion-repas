@@ -133,6 +133,28 @@
         })
     }
 
+    const getMonthName = () => {
+        const month = [
+            'janvier',
+            'février',
+            'mars',
+            'avril',
+            'mai',
+            'juin',
+            'juillet',
+            'août',
+            'septembre',
+            'octobre',
+            'novembre',
+            'décembre',
+        ].at(new Date().getUTCMonth())
+
+        $('#month-name').text(month)
+    }
+
+    // --- Init.
+
+    getMonthName()
     getIngretientsOfMonth()
     getUsagePercentageOfIngredients()
     getNumberRecettesOfTheMonth()

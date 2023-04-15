@@ -91,17 +91,17 @@ Content-Type: application/json
 }
 
 ### Modifier la recette d'id 6 et retourner le résultat
-PUT http://127.0.0.1:3000/api/recettes/8
-Content-Type: application/json
+# PUT http://127.0.0.1:3000/api/recettes/8
+# Content-Type: application/json
 
-{
-    "nom": "Recette de Test",
-    "nb_personnes": 33,
-    "etapes": "1. bla. 2. blabla. 3. blablabla"
-}
+# {
+#     "nom": "Recette de Test",
+#     "nb_personnes": 33,
+#     "etapes": "1. bla. 2. blabla. 3. blablabla"
+# }
 
-### Modifier la recette d'id 6 et retourner le résultat
-PUT http://127.0.0.1:3000/api/recettes/6
+###
+PUT http://127.0.0.1:3000/api/recettes/3
 Content-Type: application/json
 
 {

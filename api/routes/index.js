@@ -33,15 +33,12 @@ router.route('/menus/:menuId/repas')
     .post(repasController.create)
 
 // prettier-ignore
-router.route('/repas/:repasId/recettes/:recetteId')
-    .put(repasController.update)
-
-// prettier-ignore
 router.route('/repas/:id')
     .delete(repasController.destroy)
 
 // prettier-ignore
 router.route('/repas/:repasId/recettes/:recetteId')
+    .put(repasController.update)
     .delete(repasController.destroyRecette)
 
 /**

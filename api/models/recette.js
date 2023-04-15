@@ -1,8 +1,6 @@
 const pool = require('../db')
 
 const Recette = {
-    //TODO: créer des propriétés pour les requêtes
-
     async getAll() {
         let connection
         let json = { error: 'Server Error', status: 500 }
@@ -32,11 +30,11 @@ const Recette = {
         let connection
         let json = { error: 'Bad Request', status: 400 }
 
-        const sqlRecettes = `
+        const insertRecetteSql = `
             INSERT INTO recettes (nom, nb_personnes, etapes)
             VALUES (?, ?, ?)`
 
-        const sqlUtiliser = `
+        const insertUtiliserSql = `
             INSERT INTO utiliser (recette_id, ingredient_id, quantite, unite)
             VALUES (?, ?, ?, ?)`
 
@@ -44,11 +42,15 @@ const Recette = {
             connection = await pool.getConnection()
             await connection.beginTransaction()
 
-            const [resultRecette] = await connection.execute(sqlRecettes, [body.nom, body.nb_personnes, body.etapes])
+            const [resultRecette] = await connection.execute(insertRecetteSql, [
+                body.nom,
+                body.nb_personnes,
+                body.etapes,
+            ])
 
             if (body.ingredients) {
                 for (ingredient of body.ingredients) {
-                    await connection.execute(sqlUtiliser, [
+                    await connection.execute(insertUtiliserSql, [
                         resultRecette.insertId,
                         ingredient.id,
                         ingredient.utiliser.quantite,
@@ -84,70 +86,42 @@ const Recette = {
         let connection
         let json = { error: 'Server Error', status: 500 }
 
-        const sqlRecettes = `
+        const updateRecetteSql = `
             UPDATE recettes
             SET nom = ?, nb_personnes = ?, etapes = ?
             WHERE id = ?`
 
-        const sqlIfUtiliserNotExists = `
+        const insertUtiliserSql = `
             INSERT INTO utiliser (recette_id, ingredient_id, quantite, unite)
             VALUES (?, ?, ?, ?)`
 
-        const sqlIfUtiliserExists = `
-            UPDATE utiliser
-            SET quantite = ?, unite = ?
-            WHERE recette_id = ? AND ingredient_id = ?`
-
-        const sqlUtiliserExists = `
-            SELECT COUNT(*) AS count
-            FROM utiliser
-            WHERE recette_id = ? AND ingredient_id = ?`
+        const deleteUtiliserSql = `
+            DELETE FROM utiliser
+            WHERE recette_id = ?`
 
         try {
             connection = await pool.getConnection()
             await connection.beginTransaction()
 
-            const [resultRecette] = await connection.execute(sqlRecettes, [
+            const [resultRecette] = await connection.execute(updateRecetteSql, [
                 body.nom,
                 body.nb_personnes,
                 body.etapes,
                 +recetteId,
             ])
 
+            await connection.execute(deleteUtiliserSql, [+recetteId])
+
             let numAffectedRows = 0
             if (body.ingredients) {
                 for (const ingredient of body.ingredients) {
-                    const [resultUtiliserExists] = await connection.execute(sqlUtiliserExists, [
+                    const [resultUtiliserInsert] = await connection.execute(insertUtiliserSql, [
                         +recetteId,
                         ingredient.id,
+                        ingredient.utiliser.quantite,
+                        ingredient.utiliser.unite,
                     ])
-
-                    console.log(resultUtiliserExists[0].count)
-
-                    if (resultUtiliserExists[0].count > 0) {
-                        console.log('EXISTS')
-
-                        const [resultUtiliserUpdate] = await connection.execute(sqlIfUtiliserExists, [
-                            ingredient.utiliser.quantite,
-                            ingredient.utiliser.unite,
-                            +recetteId,
-                            ingredient.id,
-                        ])
-                        console.log('UPDATE quantite, unite:', resultUtiliserUpdate.affectedRows)
-
-                        numAffectedRows += resultUtiliserUpdate.affectedRows
-                    } else {
-                        console.log("DOESN'T EXISTS")
-
-                        const [resultUtiliserInsert] = await connection.execute(sqlIfUtiliserNotExists, [
-                            +recetteId,
-                            ingredient.id,
-                            ingredient.utiliser.quantite,
-                            ingredient.utiliser.unite,
-                        ])
-
-                        numAffectedRows += resultUtiliserInsert.affectedRows
-                    }
+                    numAffectedRows++
                 }
             }
 
@@ -235,6 +209,12 @@ const Recette = {
     },
 }
 
+/**
+ * Transform sql result to JS object.
+ *
+ * @param {array} rows
+ * @returns array with recette objects
+ */
 const rowsToRecettes = (rows) => {
     const recettes = []
     let currentRecette = null
