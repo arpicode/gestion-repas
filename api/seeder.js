@@ -6,6 +6,7 @@ async function seed() {
         connection = await pool.getConnection()
         await connection.beginTransaction()
 
+        console.log('Seeding database...')
         await connection.query(`
             INSERT INTO ingredients (id, nom) VALUES
                 (1, "aubergine"),

@@ -11,5 +11,3 @@ const debounce = (fn, delay = 200) => {
         }, delay)
     }
 }
-
-const he = () => {}
